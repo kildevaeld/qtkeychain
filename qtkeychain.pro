@@ -5,8 +5,9 @@ CONFIG += staticlib
 TEMPLATE = lib
 TARGET = qtkeychain
 
-HEADERS +=  keychain.h keychain_p.h qkeychain_export.h
-SOURCES +=  keychain.cpp
+DEFINES += QKEYCHAIN_STATICLIB
+HEADERS += keychain.h keychain_p.h qkeychain_export.h
+SOURCES += keychain.cpp
 
 mac: SOURCES += keychain_mac.cpp
 win32: SOURCES += keychain_win.cpp
