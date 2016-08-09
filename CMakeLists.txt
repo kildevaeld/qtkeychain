@@ -66,6 +66,24 @@ if (Qt5Core_FOUND)
       set(CMAKE_POSITION_INDEPENDENT_CODE ON)
     endif()
   endif()
+
+  if (NOT Qt5Core_VERSION VERSION_LESS "5.7.0")
+    if (CMAKE_COMPILER_IS_GNUCXX)
+      if ((NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0") AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6.1.0"))
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+      elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0")
+        message(FATAL_ERROR "Can't build QtKeychain using g++-${CMAKE_CXX_COMPILER_VERSION} and Qt ${Qt5Core_VERSION}: compiler supporting C++11 is required")
+      endif()
+    elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      if (NOT ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 3.3)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+      else()
+        message(FATAL_ERROR "Can't build QtKeychain using clang++-${CMAKE_CXX_COMPILER_VERSION} and Qt ${Qt5Core_VERSION}: compiler supporting C++11 is required")
+      endif()
+    elseif ((CMAKE_CXX_COMPILER_ID MATCHES "MSVC") AND (MSVC_VERSION LESS 1700))
+      message(FATAL_ERROR "Can't build QtKeychain using VC++-${MSVC_VERSION} and Qt ${Qt5Core_VERSION}: compiler supporting C++11 is required")
+    endif()
+  endif()
 else()
   set(QTKEYCHAIN_VERSION_INFIX "")
   if(UNIX AND NOT APPLE)
@@ -114,10 +132,10 @@ endif()
 if(APPLE)
     list(APPEND qtkeychain_SOURCES keychain_mac.cpp)
 
-    find_library(COREFOUNDATION_LIBRARY CoreFoundation)
+    find_library(COREFOUNDATION_LIBRARY CoreFoundation REQUIRED)
     list(APPEND qtkeychain_LIBRARIES ${COREFOUNDATION_LIBRARY})
 
-    find_library(SECURITY_LIBRARY Security)
+    find_library(SECURITY_LIBRARY Security REQUIRED)
     list(APPEND qtkeychain_LIBRARIES ${SECURITY_LIBRARY})
 endif()
 
@@ -192,7 +210,7 @@ install(TARGETS ${QTKEYCHAIN_TARGET_NAME}
 )
 
 add_executable( testclient testclient.cpp )
-target_link_libraries( testclient ${QTKEYCHAIN_TARGET_NAME} ${qtkeychain_LIBRARIES})
+target_link_libraries( testclient ${QTKEYCHAIN_TARGET_NAME})
 
 
 ###
