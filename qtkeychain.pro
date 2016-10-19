@@ -17,3 +17,6 @@ unix:!mac {
     SOURCES += gnomekeyring.cpp keychain_unix.cpp kwallet_interface.cpp
     OTHER_FILES += org.kde.KWallet.xml
 }
+
+DISTFILES += \
+    qtkeychain.pri

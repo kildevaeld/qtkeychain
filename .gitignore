@@ -45,3 +45,4 @@ qtkeychain.build
 *~
 
 
+*.pro.user*
