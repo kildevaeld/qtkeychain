@@ -22,7 +22,7 @@
 #include "kwallet_interface.h"
 #else
 
-class QDBusPendingCallWatcher;
+class QDBusPendingCallWatcher: public QObject { };
 
 #endif
 
